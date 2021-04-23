@@ -1,0 +1,25 @@
+{
+    "name": "nwidart/ajaxupload",
+    "description": "",
+    "authors": [
+        {
+            "name": "Nicolas Widart",
+            "email": "n.widart@gmail.com"
+        }
+    ],
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Core\\AjaxUpload\\Providers\\AjaxUploadServiceProvider"
+            ],
+            "aliases": {
+
+            }
+        }
+    },
+    "autoload": {
+        "psr-4": {
+            "Core\\AjaxUpload\\": ""
+        }
+    }
+}

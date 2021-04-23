@@ -1,0 +1,25 @@
+{
+    "name": "nwidart/menu",
+    "description": "",
+    "authors": [
+        {
+            "name": "Nicolas Widart",
+            "email": "n.widart@gmail.com"
+        }
+    ],
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Core\\Menu\\Providers\\MenuServiceProvider"
+            ],
+            "aliases": {
+
+            }
+        }
+    },
+    "autoload": {
+        "psr-4": {
+            "Core\\Menu\\": ""
+        }
+    }
+}

@@ -1,0 +1,9 @@
+{
+    "Core": true,
+    "AjaxUpload": true,
+    "Logging": true,
+    "Menu": true,
+    "Role": true,
+    "User": true,
+    "Test": true
+}

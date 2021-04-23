@@ -1,0 +1,191 @@
+﻿/* Common CSS */
+*:focus {
+    outline: none;
+}
+
+/* Override CoreUI */
+button:focus {
+    outline: none;
+}
+
+@media print {
+    body {
+        width: 10cm;
+        height: 8cm
+    }
+}
+
+.c-app {
+    background-color: #f3f3f4;
+}
+
+.c-sidebar {
+    background-color: #122f3b;
+}
+
+.c-sidebar-nav-link, .c-sidebar-nav-dropdown-toggle {
+    white-space: normal;
+}
+
+.c-sidebar-nav-icon {
+    line-height: 1.09375rem;
+}
+
+.c-icon:not(.c-icon-c-s):not(.c-icon-custom-size) {
+    line-height: 1.3rem;
+}
+
+.c-footer {
+    background: #fff;
+}
+
+.btn-warning,
+.btn-warning:hover,
+.btn-warning.disabled,
+.btn-warning:disabled {
+	color: #fff;
+}
+
+/* Extend CoreUI */
+.c-footer.c-footer-sticky {
+    position: sticky;
+    bottom: 0px;
+}
+
+@media (min-width: 768px) {
+    .c-footer.c-footer-sticky > .container-fluid,
+    .c-footer.c-footer-sticky > .container-sm,
+    .c-footer.c-footer-sticky > .container-md,
+    .c-footer.c-footer-sticky > .container-lg,
+    .c-footer.c-footer-sticky > .container-xl {
+        padding-right: 30px;
+        padding-left: 30px;
+    }
+}
+
+/* Override Select2 */
+.select2-container--default .select2-selection--single .select2-selection__rendered {
+    line-height: 32px !important;
+}
+
+.select2-container--default .select2-selection--single {
+    height: 36px !important;
+}
+
+.select2-container--default .select2-selection--single .select2-selection__arrow {
+    height: 34px !important;
+}
+
+.select2-container--default .select2-selection--single {
+    border: 1px solid #d8dbe0;
+}
+
+/* Common */
+@media only screen and (max-width: 575px) {
+    .table-data {
+        width: 1000px;
+    }
+}
+
+/* Loading */
+.loading {
+	position: fixed;
+	width: 100%;
+	height: 100%;
+	z-index: 99999;
+	background: rgba(0, 0, 0, 0.5);
+	display: none;
+}
+
+.loading .wrapper {
+	position: relative;
+	width: 100%;
+	height: 100%;
+}
+
+.loading .wrapper .icon {
+	position: absolute;
+	width: 80px;
+	height: auto;
+	top: 50%;
+	left: 50%;
+	transform: translateX(-50%) translateY(-50%);
+	-webkit-transform: translateX(-50%) translateY(-50%);
+}
+
+body.show-loading {
+	overflow: hidden;
+}
+
+body.show-loading .loading {
+	display: block;
+}
+
+/* Map */
+.canvas-wrapper canvas {
+    border: 1px solid #707070;
+}
+
+.canvas-wrapper canvas:first-child {
+    background-size: 100% 100%;
+    position: absolute;
+    top: 0px;
+    right: 0px;
+    left: 0px;
+    width: 100% !important;
+    height: 100% !important;
+}
+
+.canvas-wrapper .canvas-container {
+    position: relative;
+    width: 100% !important;
+    height: 0px !important;
+}
+
+.canvas-wrapper .upper-canvas {
+    width: 100% !important;
+    height: 100% !important;
+}
+
+/* Modal Shelf */
+#modal-shelf {
+    padding-left: 0px !important;
+    padding-right: 0px !important;
+}
+
+#modal-shelf .modal-lg {
+    width: 100%;
+    margin: 0px;
+    max-width: unset;
+}
+
+#modal-shelf .page-title {
+    font-size: 16px;
+    margin: 10px 0px 10px 0px;
+}
+
+#modal-shelf #tbl-shelf-detail .number {
+    height: 20px;
+    margin: 0px;
+    padding: 8px 0px;
+}
+
+#modal-shelf #tbl-shelf-detail .txt-shelf-detail {
+    text-align: center;
+}
+
+#modal-shelf #tbl-shelf-detail .shelf-position {
+    font-weight: bold;
+}
+
+#modal-shelf .form-shelf {
+    height: calc(100vh - 167px);
+    overflow-y: scroll;
+}
+
+#modal-shelf #map-2 {
+    padding-left: 15px;
+}
+.w-10{
+    width: 10% !important;
+}
