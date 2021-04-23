@@ -2,6 +2,8 @@
 
 namespace Core\Role\Providers;
 
+use Core\Role\Repositories\Classes\RoleRepository;
+use Core\Role\Repositories\Interfaces\IRoleRepository;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -29,6 +31,10 @@ class RoleServiceProvider extends ServiceProvider
     public function register()
     {
         $this->app->register(RouteServiceProvider::class);
+        $this->app->singleton(
+            IRoleRepository::class,
+            RoleRepository::class
+        );
     }
 
     /**

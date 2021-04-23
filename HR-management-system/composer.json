@@ -16,7 +16,8 @@
         "awobaz/compoships": "^2.0",
         "barryvdh/laravel-debugbar": "^3.5",
         "laravelcollective/html": "^6.1",
-        "spatie/laravel-permission": "^3.16"
+        "spatie/laravel-permission": "^3.16",
+        "ext-mysql_xdevapi": "*"
     },
     "require-dev": {
         "facade/ignition": "^2.5",

@@ -2,6 +2,8 @@
 
 namespace Core\User\Providers;
 
+use Core\User\Repositories\Classes\UserRepository;
+use Core\User\Repositories\Interfaces\IUserRepository;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -29,6 +31,11 @@ class UserServiceProvider extends ServiceProvider
     public function register()
     {
         $this->app->register(RouteServiceProvider::class);
+
+        $this->app->singleton(
+            IUserRepository::class,
+            UserRepository::class
+        );
     }
 
     /**

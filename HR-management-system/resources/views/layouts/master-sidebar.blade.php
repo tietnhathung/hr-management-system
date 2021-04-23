@@ -3,10 +3,10 @@
         <a class="text-white text-uppercase text-decoration-none" href="{{url('/')}}">
             <div class="c-sidebar-brand-full text-uppercase">
                 <img src="{{asset('/images/logo.png')}}" alt="Logo" class="img-fluid d-inline-block mr-1" style="width: 45px;" />
-                <strong>Kho Tuấn Huyền</strong>
+                <strong>HR manage system</strong>
             </div>
             <div class="c-sidebar-brand-minimized text-uppercase text-center">
-                <strong>Kho Tuấn Huyền</strong>
+                <strong>HR manage system</strong>
             </div>
         </a>
     </div>

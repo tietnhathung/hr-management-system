@@ -20,7 +20,8 @@
                         <div class="card-body">
                             <div class="row mb-3">
                                 <div class="col-12">
-                                    <img src="{{asset('/images/logo-full.png')}}" alt="Logo" class="img-fluid d-inline-block mr-1" />
+                                    <h1 class="">HR manage system</h1>
+{{--                                    <img src="{{asset('/images/logo-full.png')}}" alt="Logo" class="img-fluid d-inline-block mr-1" />--}}
                                 </div>
                             </div>
                             @include('shared.message')

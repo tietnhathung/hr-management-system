@@ -3,6 +3,8 @@
 namespace Core\User\Http\Controllers;
 
 use App\Models\User;
+use Core\Role\Repositories\Interfaces\IRoleRepository;
+use Core\User\Repositories\Interfaces\IUserRepository;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Routing\Controller;
@@ -20,32 +22,36 @@ class UserController extends Controller
      */
     protected $index_page;
 
-    public function __construct()
-    {
+    protected $userRepository;
+    protected $roleRepository;
+
+    public function __construct(
+        IUserRepository $iUserRepository,
+        IRoleRepository $iRoleRepository
+    ){
         $this->index_page = 'user.index';
+        $this->userRepository = $iUserRepository;
+        $this->roleRepository = $iRoleRepository;
     }
 
     public function index(Request $request){
 
         $username = $request->name;
 
-        $users = User::when($username, function($query) use($username) {
-                $query->where("fullname", "like" , "%$username%");
-                $query->orWhere("email", "like" , "%$username%");
-                $query->orWhere("username", "like" , "%$username%");
-            })
-            ->orderBy('Id', 'DESC')->paginate(30);
+        $users = $this->userRepository->paginate($username);
 
         return view('user::index', compact('users'));
     }
 
     /**
      * Show the form for creating a new resource.
-     * @return Response
+     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View|Response
      */
-    public function create(Request $request){
-        $obj = new User();
-        $role_list = Role::all();
+    public function create(){
+
+        $obj = $this->userRepository->getInstance();
+
+        $role_list = $this->roleRepository->getAll();
 
         $obj->user_roles = array();
 
@@ -55,37 +61,30 @@ class UserController extends Controller
     /**
      * Store a newly created resource in storage.
      * @param Request $request
-     * @return Response
+     * @return \Illuminate\Http\RedirectResponse|Response
      */
     public function store(UserRequest $request){
 
 
-        $role_list = Role::all();
+        $role_list = $this->roleRepository->getAll();
 
-        if (!empty($request->user_roles))
+        if (!empty($request->user_roles)){
             foreach ($request->user_roles as $roleId) {
-            if (!$role_list->contains("id", $roleId)) {
-                return redirect()->back()->with("error-message", "Delete user, Please try again");
+                if (!$role_list->contains("id", $roleId)) {
+                    return redirect()->back()->with("error-message", "The role does not exist");
+                }
             }
         }
 
-        $obj = User::create($request->except([]));
+        $obj = $this->userRepository->create($request->except([]));
 
-        $obj->password = bcrypt($request->password);
-
-        if ($request->has([
-            'error_description'
-        ])) {
+        if($obj == null){
+            return redirect()->back()->with("error-message", "There was an error in adding user!");
+        }
+        if ($request->has([ 'error_description' ])) {
             $errors = implode(',', $request->error_description);
         }
 
-        $obj->save();
-
-        if (is_array($request->user_roles))
-            foreach ($request->user_roles as $rid) {
-                $role = Role::findById($rid);
-                $obj->assignRole($role);
-            }
         LoggingHelper::infor("","Thêm người dùng ",$obj->fullname);
 
         return redirect(route($this->index_page))->with('flash-message', "You have added the user successfully");
@@ -94,13 +93,14 @@ class UserController extends Controller
     /**
      * Show the specified resource.
      * @param int $id
-     * @return Response
+     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Http\RedirectResponse|Response|\Illuminate\Routing\Redirector
      */
     public function show($id)
     {
-        $user = User::find($id);
-        if (!$user)
+        $user = $this->userRepository->findById($id);
+        if (!$user){
             return redirect("/")->with("error-message", "Data does not exist or is not allowed to access");
+        }
 
        return view('user::show', compact('user'));
     }
@@ -108,14 +108,15 @@ class UserController extends Controller
     /**
      * Show the form for editing the specified resource.
      * @param int $id
-     * @return Response
+     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View|Response
      */
     public function edit($id){
         $id = (int)$id;
         if ($id < 1) return redirect(route($this->index_page))->with("error-message", "Date error");
         if ($id  == Auth::id()) return redirect(route($this->index_page))->with("error-message", "Date error");
-        $obj = User::find($id);
-        $role_list = Role::all();
+
+        $obj = $this->userRepository->findById($id);
+        $role_list = $this->roleRepository->getAll();
         $obj->user_roles = $obj->roles()->pluck("id")->toArray();
 
         return view('user::edit', compact('obj', 'role_list'));
@@ -125,59 +126,38 @@ class UserController extends Controller
      * Update the specified resource in storage.
      * @param Request $request
      * @param int $id
-     * @return Response
+     * @return \Illuminate\Http\RedirectResponse
      */
     public function update(UserEditRequest $request, $id){
 
-        $role_list = Role::all();
-        if (!empty($request->user_roles))
+        $role_list = $this->roleRepository->getAll();
+        if (!empty($request->user_roles)){
             foreach ($request->user_roles as $roleId) {
-            if (!$role_list->contains("id", $roleId)) {
-                return redirect()->back()->with("error-message", "Date error, Please try again");
+                if (!$role_list->contains("id", $roleId)) {
+                    return redirect()->back()->with("error-message", "The role does not exist");
+                }
             }
         }
 
-        $obj = User::find($id);
-        $obj->fullname = $request->fullname;
-        $obj->email = $request->email;
-        $obj->status = (int)$request->status;
-        $obj->mobile = $request->mobile;
-        $obj->position = $request->position;
-        $obj->type = (int)$request->type;
-        $obj->app = (int)$request->app;
-        if ($request->password != "")
-        {
-            if($obj->password != bcrypt($request->password))
-            {
-                $user = Auth::user();
+        $obj = $this->userRepository->update($id ,$request->except([]));
 
-                // logout user
-                $userToLogout = User::find($id);
-                $userToLogout->password = bcrypt($request->password);
-                Auth::setUser($userToLogout);
-
-                //Auth::logout();
-               // Auth::logoutOtherDevices($userToLogout->getAuthPassword());
-                Auth::guard($userToLogout->name)->logoutOtherDevices($request->password, 'password');
-                // set again current user
-                Auth::setUser($user);
-            }
-            $obj->password = bcrypt($request->password);
-
+        if ( $obj === null ) {
+            return redirect()->back()->with("error-message","There was an error in updating user!");
         }
-
-        $obj->save();
 
         foreach ($obj->roles as $role) {
             if ($role_list->contains("Id", $role->Id)) {
                 $obj->removeRole($role);
             }
         }
-        if (is_array($request->user_roles))
+
+        if (is_array($request->user_roles)){
             foreach ($request->user_roles as $rid) {
                 $role = Role::findById($rid);
                 $obj->assignRole($role);
             }
+        }
+
         LoggingHelper::infor("","Update user ",$obj->fullname);
 
         return redirect(route($this->index_page))->with('flash-message', "You have successfully updated the data");
@@ -186,28 +166,27 @@ class UserController extends Controller
     /**
      * Remove the specified resource from storage.
      * @param int $id
-     * @return Response
+     * @return \Illuminate\Http\JsonResponse
      */
     public function destroy($id)
     {
-        //
+
         if (!is_numeric($id)) {
-            return abort(404, "Invalid data, please check again.");
+            return response()->json(['status'=>2,'message'=>"Invalid data, please check again."]);
         }
 
-        if ($id  == Auth::id()) return abort(500, "Can't delete your own account.");
-
-        $obj = User::find($id);
-        if (!$obj) {
-            return abort(404, "Can not find the user to delete.");
+        if ($id  == Auth::id()){
+            return response()->json(['status'=>3,'message'=>"Can't delete your own account."]);
         }
 
-        $obj->delete();
+        $isDeleted = $this->userRepository->delete($id);
 
-        LoggingHelper::infor("","Delete users ", $obj->fullname);
+        if(!$isDeleted){
+            return response()->json(['status'=>1,'message'=>'You have failed to delete the user!']);
+        }
 
-        return response()->json(['message'=>'You have successfully deleted '.$obj->username.' user']);
-
+        LoggingHelper::infor("","Delete users ", $id);
+        return response()->json(['status'=>0,'message'=>'You have successfully deleted '.$id.' user']);
     }
 
     public function updateStatus(Request $request)

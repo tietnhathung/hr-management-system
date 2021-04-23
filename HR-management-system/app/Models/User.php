@@ -26,19 +26,8 @@ class User extends Authenticatable
         'password', 'remember_token',
     ];
 
-    public function UserDevice()
-    {
-        return $this->hasMany(UserDevice::class, 'user_id', 'id');
-    }
-
-    public function Device()
-    {
-        return $this->belongsToMany(Device::class,'user_device' ,"user_id","device_id");
-    }
-
     public function delete()
     {
-        $this->UserDevice()->delete();
         return parent::delete();
     }
 }
