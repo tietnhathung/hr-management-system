@@ -13,7 +13,6 @@ class CreateAdMenuTable extends Migration {
 	 */
 	public function up()
 	{
-        Schema::drop('ad_menu');
 		Schema::create('ad_menu', function(Blueprint $table)
 		{
 			$table->bigInteger('id', true)->unsigned();

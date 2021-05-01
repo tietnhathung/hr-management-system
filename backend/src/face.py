@@ -1,7 +1,10 @@
 import cv2
 import imutils
 import os
+import pickle
 import numpy as np
+from sklearn.preprocessing import LabelEncoder
+from sklearn.svm import SVC
 from src.config import config
 
 ROOT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -16,6 +19,7 @@ class Face:
         self.caffeDetector = cv2.dnn.readNetFromCaffe(protoCaffePath, modelCaffePath)
         modelTorchPath = os.path.join(ROOT_DIR, config['DEFAULT']['ModelDir'] , 'openface_nn4.small2.v1.t7')
         self.torchEmbedder = cv2.dnn.readNetFromTorch(modelTorchPath)
+
 
     def Recognition(self,image):
         (height, width) = image.shape[:2]
@@ -62,7 +66,25 @@ class Face:
             self.torchEmbedder.setInput(faceBlob)
             return self.torchEmbedder.forward()
 
+    def Retraining(self):
+        print("start retraining....")
+        try:
+            EmbeddingsFile = open(  os.path.join(ROOT_DIR, config['DEFAULT']['ModelDir'],config['DEFAULT']['EmbeddingsFile']) , "rb").read()
+            data = pickle.loads(EmbeddingsFile)
+            le = LabelEncoder()
+            labels = le.fit_transform(data["names"])
+            recognizer = SVC(C=1.0, kernel="linear", probability=True)
+            recognizer.fit(data["embeddings"], labels)
+            f = open( os.path.join(ROOT_DIR, config['DEFAULT']['ModelDir'],config['DEFAULT']['RecognizerFile']) , "wb")
+            f.write(pickle.dumps(recognizer))
+            f.close()
+            f = open(  os.path.join(ROOT_DIR, config['DEFAULT']['ModelDir'],config['DEFAULT']['LeFile']) , "wb")
+            f.write(pickle.dumps(le))
+            f.close()
+            print("traning success")
+        except:
+            print("Open file data failure")
 
-
+        print("end retraining")
 
 

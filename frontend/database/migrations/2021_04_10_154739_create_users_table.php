@@ -32,18 +32,10 @@ class CreateUsersTable extends Migration {
 			$table->string('mobile')->nullable();
 			$table->softDeletes();
 			$table->integer('type')->nullable()->default(1)->comment('1: người đánh giá; 0: mặc định');
-			$table->string('accesstoken_app', 4000)->nullable();
-			$table->integer('app')->nullable()->default(0);
-			$table->string('firebase_token')->nullable();
-			$table->boolean('is_notifications')->nullable()->default(0);
-			$table->integer('default_monitor_id')->unsigned()->nullable();
 			$table->integer('deleted_by')->nullable()->default(0);
 			$table->integer('created_by')->nullable()->default(0);
 			$table->integer('updated_by')->nullable()->default(0);
 			$table->integer('section_id')->nullable()->default(0);
-			$table->index(['id','status','deleted_at','app'], 'UserById');
-			$table->index(['username','status','deleted_at','app'], 'Username');
-			$table->index(['status','type'], 'type');
 		});
 	}
 

@@ -7,6 +7,8 @@ import numpy as np
 import pickle
 face = Face()
 
+ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
+
 imagePaths = list(paths.list_images(config['DEFAULT']['DatasetDir']))
 
 knownNames = []
@@ -28,6 +30,8 @@ for (i, imagePath) in enumerate(imagePaths):
             knownEmbeddings.append(vec.flatten())
 
 data = {"embeddings": knownEmbeddings, "names": knownNames}
-f = open(config['DEFAULT']['EmbeddingsFile'], "wb")
+
+f = open( os.path.join(ROOT_DIR, config['DEFAULT']['ModelDir'],config['DEFAULT']['EmbeddingsFile']) , "wb")
 f.write(pickle.dumps(data))
 f.close()
+print("setup data success")

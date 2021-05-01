@@ -3,7 +3,6 @@
 use Database\Seeders\AdLoggingTableSeeder;
 use Database\Seeders\AdMenuTableSeeder;
 use Database\Seeders\LoggingActivityTableSeeder;
-use Database\Seeders\MigrationsTableSeeder;
 use Database\Seeders\ModelHasPermissionsTableSeeder;
 use Database\Seeders\ModelHasRolesTableSeeder;
 use Database\Seeders\PermissionsTableSeeder;
@@ -24,7 +23,6 @@ class DatabaseSeeder extends Seeder
         $this->call(AdLoggingTableSeeder::class);
         $this->call(AdMenuTableSeeder::class);
         $this->call(LoggingActivityTableSeeder::class);
-        $this->call(MigrationsTableSeeder::class);
         $this->call(ModelHasPermissionsTableSeeder::class);
         $this->call(ModelHasRolesTableSeeder::class);
         $this->call(PermissionsTableSeeder::class);
