@@ -5,7 +5,7 @@ import pickle
 import numpy as np
 from sklearn.preprocessing import LabelEncoder
 from sklearn.svm import SVC
-from src.config import config
+from app import config
 
 ROOT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 

@@ -1,7 +1,7 @@
 import pickle
 from sklearn.preprocessing import LabelEncoder
 from sklearn.svm import SVC
-from src.config import config
+from app import config
 
 
 def train_model():
