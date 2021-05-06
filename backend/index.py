@@ -1,18 +1,37 @@
-from app.face import Face
-import cv2
 import schedule
-from datetime import datetime
+import threading
+from app import Face
+import time
 from app import schedule_jods
 from app import dbr
-from app import db
-from app.model.user import User
-from app.model.timekeeping import Timekeeping
-from app import config
+from app import Syn_redis_to_db
+from datetime import datetime
 
+print("run")
 
-now = datetime.now()
+print("initialization face")
+face = Face()
 
-timekeeping  =  Timekeeping.query.filter_by( working_day = now.strftime(config['DEFAULT']['DateFormat']) ).all()
+print("initialization Syn_redis_to_db")
+syn_redis_to_db = Syn_redis_to_db()
 
-for ti in timekeeping:
-    print(ti.user)
+def update_syn_redis_to_db():
+    syn_redis_to_db = Syn_redis_to_db()
+
+def synredis2mysql():
+    print("synredis2mysql")
+    print(datetime.now())
+    syn_redis_to_db.syn()
+
+print("face.recognize")
+
+schedule.every(1).minutes.do( synredis2mysql )
+
+schedule.every().day.at("00:30").do(face.recognize)
+
+schedule.every().day.at("00:00").do(update_syn_redis_to_db)
+
+schedule.every().day.at("00:10").do(dbr.flushall)
+
+schedule_jods(schedule)
+

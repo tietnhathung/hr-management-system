@@ -1,6 +1,6 @@
 from app import db
-from sqlalchemy import Column,Integer,DateTime,Date,ForeignKey
-from app.model.user import User
+from sqlalchemy import Column,Integer,DateTime,ForeignKey
+from app.entity import User
 
 class Timekeeping(db.Model):
 

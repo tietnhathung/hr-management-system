@@ -1,13 +1,12 @@
-from src.face import Face
-from src.config import config
+from app import Face
+from app import config
+from app import ROOT_DIR
 import cv2
 from imutils import paths
 import os
 import numpy as np
 import pickle
 face = Face()
-
-ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
 
 imagePaths = list(paths.list_images(config['DEFAULT']['DatasetDir']))
 
