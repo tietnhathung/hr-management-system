@@ -1,21 +1,23 @@
 <?php
 
-namespace Modules\Test\Providers;
+namespace Modules\Timekeeping\Providers;
 
 use Illuminate\Support\ServiceProvider;
-use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Database\Eloquent\Factory;
+use Modules\Timekeeping\Repositories\Classes\TimekeepingRepository;
+use Modules\Timekeeping\Repositories\Interfaces\ITimekeepingRepository;
 
-class TestServiceProvider extends ServiceProvider
+class TimekeepingServiceProvider extends ServiceProvider
 {
     /**
      * @var string $moduleName
      */
-    protected $moduleName = 'Test';
+    protected $moduleName = 'Timekeeping';
 
     /**
      * @var string $moduleNameLower
      */
-    protected $moduleNameLower = 'test';
+    protected $moduleNameLower = 'timekeeping';
 
     /**
      * Boot the application events.
@@ -37,6 +39,7 @@ class TestServiceProvider extends ServiceProvider
      */
     public function register()
     {
+        $this->app->singleton(ITimekeepingRepository::class ,TimekeepingRepository::class);
         $this->app->register(RouteServiceProvider::class);
     }
 

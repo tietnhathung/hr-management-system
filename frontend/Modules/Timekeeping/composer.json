@@ -1,5 +1,5 @@
 {
-    "name": "nwidart/test",
+    "name": "nwidart/timekeeping",
     "description": "",
     "authors": [
         {
@@ -17,7 +17,7 @@
     },
     "autoload": {
         "psr-4": {
-            "Modules\\Test\\": ""
+            "Modules\\Timekeeping\\": ""
         }
     }
 }

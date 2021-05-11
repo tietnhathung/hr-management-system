@@ -11,6 +11,8 @@
 |
 */
 
-Route::prefix('test')->group(function() {
-    Route::get('/', 'TestController@index');
+use Illuminate\Support\Facades\Route;
+
+Route::prefix('timekeeping')->group(function() {
+    Route::get('/', 'TimekeepingController@index');
 });

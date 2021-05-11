@@ -21,7 +21,6 @@ class UserController extends Controller
      * @return Response
      */
     protected $index_page;
-
     protected $userRepository;
     protected $roleRepository;
 

@@ -6,7 +6,6 @@
         @endforeach
     </div>
 @endif
-
 @if (Session::get('flash-message'))
     <div class="alert alert-success" role="alert">{{ Session::get('flash-message') }}</div>
 @endif
