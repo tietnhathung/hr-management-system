@@ -14,5 +14,6 @@
 use Illuminate\Support\Facades\Route;
 
 Route::prefix('timekeeping')->group(function() {
-    Route::get('/', 'TimekeepingController@index');
+    Route::get('/', 'TimekeepingController@index')->name("timekeeping.index");
+    Route::get('/download', 'TimekeepingController@download')->name("timekeeping.download");
 });
