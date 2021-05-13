@@ -225,29 +225,35 @@ class ModelHasPermissionsTableSeeder extends Seeder
             ),
             34 => 
             array (
-                'permission_id' => 50,
-                'model_type' => '',
-                'model_id' => 159,
+                'permission_id' => 49,
+                'model_type' => 'Core\\Menu\\Entities\\Menu',
+                'model_id' => 184,
             ),
             35 => 
             array (
                 'permission_id' => 50,
                 'model_type' => '',
-                'model_id' => 162,
+                'model_id' => 159,
             ),
             36 => 
             array (
                 'permission_id' => 50,
                 'model_type' => '',
-                'model_id' => 164,
+                'model_id' => 162,
             ),
             37 => 
             array (
                 'permission_id' => 50,
                 'model_type' => '',
-                'model_id' => 175,
+                'model_id' => 164,
             ),
             38 => 
+            array (
+                'permission_id' => 50,
+                'model_type' => '',
+                'model_id' => 175,
+            ),
+            39 => 
             array (
                 'permission_id' => 50,
                 'model_type' => '',

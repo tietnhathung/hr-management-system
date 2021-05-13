@@ -24,8 +24,8 @@ class RolesTableSeeder extends Seeder
                 'id' => 2,
                 'name' => 'Quản trị hệ thống',
                 'guard_name' => 'web',
-                'created_at' => '2019-05-06 21:53:58',
-                'updated_at' => '2019-05-20 09:27:45',
+                'created_at' => '2019-05-06 21:53:58.000000',
+                'updated_at' => '2019-05-20 09:27:45.000000',
                 'level' => 1,
             ),
             1 => 
@@ -33,8 +33,8 @@ class RolesTableSeeder extends Seeder
                 'id' => 3,
                 'name' => 'Màn hình giám sát',
                 'guard_name' => 'web',
-                'created_at' => '2020-08-18 23:44:48',
-                'updated_at' => '2020-09-16 07:49:17',
+                'created_at' => '2020-08-18 23:44:48.000000',
+                'updated_at' => '2020-09-16 07:49:17.000000',
                 'level' => 1,
             ),
             2 => 
@@ -42,8 +42,8 @@ class RolesTableSeeder extends Seeder
                 'id' => 4,
                 'name' => 'Trưởng nhóm sản xuất',
                 'guard_name' => 'web',
-                'created_at' => '2020-09-16 08:41:15',
-                'updated_at' => '2020-09-16 08:41:15',
+                'created_at' => '2020-09-16 08:41:15.000000',
+                'updated_at' => '2020-09-16 08:41:15.000000',
                 'level' => 1,
             ),
         ));

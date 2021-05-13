@@ -25,17 +25,13 @@ class CreateUsersTable extends Migration {
 			$table->string('avatar')->nullable();
 			$table->string('remember_token', 100)->nullable();
 			$table->timestamps(6);
-			$table->string('company_id', 191)->nullable();
 			$table->boolean('status')->default(0);
 			$table->string('position')->nullable();
 			$table->string('address')->nullable();
-			$table->string('mobile')->nullable();
 			$table->softDeletes();
-			$table->integer('type')->nullable()->default(1)->comment('1: người đánh giá; 0: mặc định');
 			$table->integer('deleted_by')->nullable()->default(0);
 			$table->integer('created_by')->nullable()->default(0);
 			$table->integer('updated_by')->nullable()->default(0);
-			$table->integer('section_id')->nullable()->default(0);
 		});
 	}
 
