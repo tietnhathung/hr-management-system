@@ -22,7 +22,7 @@ class RoleController extends Controller
     }
     /**
      * Display a listing of the resource.
-     * @return Response
+     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View|Response
      */
     public function index()
     {
@@ -142,8 +142,9 @@ class RoleController extends Controller
             redirect ( route($this->index_page))->with ( "flash-message", "Data does not exist" );
             return;
         }
-        $obj =Role::find($id);
-        $obj->delete ();
+        $obj = Role::find($id);
+        dd($obj);
+        $obj->delete();
 
         LoggingHelper::infor("","deleted user groups ", $obj->name);
 
