@@ -2,7 +2,6 @@ import threading
 import time
 def schedule_jods(schedule_jod):
     cease_continuous_run = threading.Event()
-
     class ScheduleThread(threading.Thread):
         @classmethod
         def run(cls):

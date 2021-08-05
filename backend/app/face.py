@@ -11,18 +11,18 @@ from sklearn.svm import SVC
 from app import config
 from app import ROOT_DIR
 from app import dbr
+from app import app
+from app import show_image
 
 class Face:
     caffeDetector = None
     torchEmbedder = None
-
     def __init__(self):
         protoCaffePath = os.path.join(ROOT_DIR, config['DEFAULT']['ModelDir'] , 'deploy.prototxt')
         modelCaffePath = os.path.join(ROOT_DIR, config['DEFAULT']['ModelDir'] , 'res10_300x300_ssd_iter_140000.caffemodel')
         self.caffeDetector = cv2.dnn.readNetFromCaffe(protoCaffePath, modelCaffePath)
         modelTorchPath = os.path.join(ROOT_DIR, config['DEFAULT']['ModelDir'] , 'openface_nn4.small2.v1.t7')
         self.torchEmbedder = cv2.dnn.readNetFromTorch(modelTorchPath)
-
 
     def Recognition(self,image):
         (height, width) = image.shape[:2]
@@ -45,7 +45,10 @@ class Face:
                 list_vec_faces = []
                 list_poit_faces = box
 
+                show_image(image, box)
+
                 for poit_face in list_poit_faces:
+
                     (startX, startY, endX, endY) = poit_face.astype("int")
 
                     face_image = image[startY:endY, startX:endX]
@@ -94,6 +97,7 @@ class Face:
         print("end retraining")
 
     def recognize(self):
+        app.logger.info("face.recognize...")
         modelrecognizerPath = os.path.join(ROOT_DIR, config['DEFAULT']['ModelDir'] , 'recognizer.pickle')
         recognizer = pickle.loads(open(modelrecognizerPath, "rb").read())
         lePath = os.path.join(ROOT_DIR, config['DEFAULT']['ModelDir'] , 'le.pickle')
@@ -101,6 +105,7 @@ class Face:
         working_date = datetime.now()
         video = VideoStream(src=0).start()
         time.sleep(2.0)
+
         while working_date.strftime(config['TIME']['DateFormat']) == datetime.now().strftime(config['TIME']['DateFormat']):
             now = datetime.now().strftime(config['TIME']['DateTimeFormat'])
             frame = video.read()
@@ -108,13 +113,17 @@ class Face:
             list_poit_faces = self.Recognition(frame_w600)
             box = list_poit_faces[:,1:]
             list_poit_faces_vec = self.Face_vec(frame_w600,box)
+
             for vec in list_poit_faces_vec:
                 max = recognizer.predict(vec)[0]
-                name = le.classes_[max]
-                if not name == '0':
+                id = le.classes_[max]
+
+                app.logger.info("Worker id: {}".format(id))
+
+                if not id == '0':
                     time_re = working_date.strftime(config['TIME']['DateFormatRedis'])
-                    key_on  = 'timekeeping.{}.{}.get_to_work'.format(time_re,name)
-                    key_off  = 'timekeeping.{}.{}.get_off_work'.format(time_re,name)
+                    key_on  = 'timekeeping.{}.{}.get_to_work'.format(time_re,id)
+                    key_off  = 'timekeeping.{}.{}.get_off_work'.format(time_re,id)
                     if not dbr.exists(key_on):
                         dbr.set(key_on, now)
                     dbr.set(key_off, now)

@@ -1,6 +1,6 @@
 from datetime import datetime
 from app.entity import User,Timekeeping
-from app import db,dbr,config
+from app import db,dbr,config,app
 
 class Syn_redis_to_db:
     def get_list_user(self):
@@ -19,7 +19,7 @@ class Syn_redis_to_db:
         db.session.commit()
 
     def syn(self):
-        print("run to syn")
+        app.logger.info("run to syn...........");
         working_date = datetime.now()
         list_users = self.get_list_user()
         for user in list_users:
