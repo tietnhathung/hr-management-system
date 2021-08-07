@@ -13,16 +13,19 @@ from app import ROOT_DIR
 from app import dbr
 from app import app
 from app import show_image
+from app.entity import User
 
 class Face:
     caffeDetector = None
     torchEmbedder = None
+    list_users = None
     def __init__(self):
         protoCaffePath = os.path.join(ROOT_DIR, config['DEFAULT']['ModelDir'] , 'deploy.prototxt')
         modelCaffePath = os.path.join(ROOT_DIR, config['DEFAULT']['ModelDir'] , 'res10_300x300_ssd_iter_140000.caffemodel')
         self.caffeDetector = cv2.dnn.readNetFromCaffe(protoCaffePath, modelCaffePath)
         modelTorchPath = os.path.join(ROOT_DIR, config['DEFAULT']['ModelDir'] , 'openface_nn4.small2.v1.t7')
         self.torchEmbedder = cv2.dnn.readNetFromTorch(modelTorchPath)
+        self.list_users = User.query.all()
 
     def Recognition(self,image):
         (height, width) = image.shape[:2]
@@ -44,8 +47,6 @@ class Face:
             if(isinstance(box[0], np.ndarray)):
                 list_vec_faces = []
                 list_poit_faces = box
-
-                show_image(image, box)
 
                 for poit_face in list_poit_faces:
 
@@ -112,21 +113,40 @@ class Face:
             frame_w600 = imutils.resize(frame, width=600)
             list_poit_faces = self.Recognition(frame_w600)
             box = list_poit_faces[:,1:]
-            list_poit_faces_vec = self.Face_vec(frame_w600,box)
 
-            for vec in list_poit_faces_vec:
-                max = recognizer.predict(vec)[0]
-                id = le.classes_[max]
+            if (box.any()):
+                for list_poit_faces_vec in box:
 
-                app.logger.info("Worker id: {}".format(id))
+                    vec = self.Face_vec(frame_w600,list_poit_faces_vec)
 
-                if not id == '0':
-                    time_re = working_date.strftime(config['TIME']['DateFormatRedis'])
-                    key_on  = 'timekeeping.{}.{}.get_to_work'.format(time_re,id)
-                    key_off  = 'timekeeping.{}.{}.get_off_work'.format(time_re,id)
-                    if not dbr.exists(key_on):
-                        dbr.set(key_on, now)
-                    dbr.set(key_off, now)
+                    preds = recognizer.predict_proba(vec)[0]
+
+                    indexMax =  np.argmax(preds)
+
+                    persen = preds[indexMax]
+                    id = le.classes_[indexMax]
+
+                    # push to image and log
+                    (startX, startY, endX, endY) = list_poit_faces_vec.astype("int")
+                    cv2.rectangle(frame_w600, (startX, startY), (endX, endY), (0, 255, 0), 3)
+
+                    if not id == '0':
+                        name = next(x for x in self.list_users if x.id == int(id))
+                        text = "Worker: {}, {}%".format(name.fullname, persen)
+                        y = startY - 10 if startY - 10 > 10 else startY + 10
+                        cv2.putText(frame_w600, text, (startX, y),cv2.FONT_HERSHEY_SIMPLEX, 0.45, (0, 0, 255), 2)
+                        app.logger.info(text)
+
+                    if not id == '0':
+                        time_re = working_date.strftime(config['TIME']['DateFormatRedis'])
+                        key_on  = 'timekeeping.{}.{}.get_to_work'.format(time_re,id)
+                        key_off  = 'timekeeping.{}.{}.get_off_work'.format(time_re,id)
+                        if not dbr.exists(key_on):
+                            dbr.set(key_on, now)
+                        dbr.set(key_off, now)
+                show_image(frame_w600)
+
+
 
         video.stop()
 
